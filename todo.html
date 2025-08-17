@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>G2G To-Do List</title>
+    <script src="https://unpkg.com/vue@3"></script>
+    <link href="https://fonts.googleapis.com/css?family=Inter:400,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="todo.css">
+</head>
+<body>
+<div class="header">
+    <h1>G2G To-Do List</h1>
+<div id="app">
+    <div class="main-content">
+        <h2>Add New Task</h2>
+        <div class="input-row">
+            <input v-model="newTask.text" type="text" placeholder="Task description">
+            <select v-model="newTask.priority">
+                <option disabled value="">Select priority</option>
+                <option value="urgent">Urgent</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+            </select>
+            <select v-model="newTask.status">
+                <option disabled value="">Select status</option>
+                <option value="inprogress">In Progress</option>
+                <option value="complete">Complete</option>
+                <option value="cancelled">Cancelled</option>
+            </select>
+            <input v-model="newTask.dueDate" type="date" placeholder="Due date">
+            <button class="add-btn" @click="addTask">Add Task</button>
+        </div>
+    </div>
+    <div class="sidebar">
+        <h2 style="font-size:20px;">Tasks</h2>
+        <div class="task-list">
+            <div v-for="task in sortedActiveTasks" :key="task.id" :class="['task-card', 'priority-' + task.priority, 'status-' + task.status]">
+                <div class="task-content">
+                    <div class="task-text">{{ task.text }}</div>
+                    <div class="task-details">
+                        <div class="duedate">Due: {{ formatDate(task.dueDate) }}</div>
+                        <div class="task-badges">
+                            <span class="priority-badge">
+                                <select class="edit-select"
+                                        :value="task.priority"
+                                        @change="updateTaskPriority(task.id, $event.target.value)">
+                                    <option value="urgent">Urgent</option>
+                                    <option value="high">High</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="low">Low</option>
+                                </select>
+                            </span>
+                            <span class="status-badge">
+                                <select class="edit-select"
+                                        :value="task.status"
+                                        @change="updateTaskStatus(task.id, $event.target.value)">
+                                    <option value="inprogress">In Progress</option>
+                                    <option value="complete">Complete</option>
+                                    <option value="cancelled">Cancelled</option>
+                                </select>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <button class="delete-btn" @click="deleteTask(task.id)">Delete</button>
+            </div>
+            <div v-if="!sortedActiveTasks.length" style="text-align:center; color:#a0aec0; margin-top:24px;">
+                No active tasks.
+            </div>
+        </div>
+        <h2 style="font-size:18px; margin-top:36px;">Completed & Cancelled Tasks</h2>
+        <div class="task-list">
+            <div v-for="task in sortedCompletedAndCancelledTasks" :key="task.id" :class="['task-card', 'priority-' + task.priority, 'status-' + task.status]">
+                <div class="task-content">
+                    <div class="task-text">{{ task.text }}</div>
+                    <div class="task-details">
+                        <div class="duedate">Due: {{ formatDate(task.dueDate) }}</div>
+                        <div class="task-badges">
+                            <span class="priority-badge">
+                                <select class="edit-select"
+                                        :value="task.priority"
+                                        @change="updateTaskPriority(task.id, $event.target.value)">
+                                    <option value="urgent">Urgent</option>
+                                    <option value="high">High</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="low">Low</option>
+                                </select>
+                            </span>
+                            <span class="status-badge">
+                                <select class="edit-select"
+                                        :value="task.status"
+                                        @change="updateTaskStatus(task.id, $event.target.value)">
+                                    <option value="inprogress">In Progress</option>
+                                    <option value="complete">Complete</option>
+                                    <option value="cancelled">Cancelled</option>
+                                </select>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <button class="delete-btn" @click="deleteTask(task.id)">Delete</button>
+            </div>
+            <div v-if="!sortedCompletedAndCancelledTasks.length" style="text-align:center; color:#a0aec0; margin-top:24px;">
+                No completed or cancelled tasks.
+            </div>
+        </div>
+    </div>
+</div>
+<script src="todo.js"></script>
+</body>
+</html>
